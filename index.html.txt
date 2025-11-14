@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secret Confession Page</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #ffafbd, #ffc3a0);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: #5a3e36;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        header {
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #8b5a5a;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+        
+        .confession-area {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .confession-item {
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 150px;
+        }
+        
+        .confession-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .confession-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .confession-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .instructions {
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+        
+        .footer {
+            margin-top: 20px;
+            font-style: italic;
+            color: #7a5c5c;
+        }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+            position: relative;
+            animation: popIn 0.4s ease-out;
+        }
+        
+        @keyframes popIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            80% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #8b5a5a;
+        }
+        
+        .message-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #8b5a5a;
+        }
+        
+        .message-content {
+            font-size: 1.1rem;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+        
+        .message-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Secret Confessions</h1>
+            <p class="subtitle">Click on any confession to reveal a hidden message</p>
+        </header>
+        
+        <div class="instructions">
+            <p>We all have secrets we want to share. Click on any confession below to reveal a message.</p>
+        </div>
+        
+        <div class="confession-area">
+            <div class="confession-item" data-message="1">
+                <div class="confession-icon">💌</div>
+                <div class="confession-title">Love Confession</div>
+                <div class="confession-desc">Click to reveal</div>
+            </div>
+            
+                    
+        <div class="footer">
+            <p>Your secrets are safe here. No one will know it was you.</p>
+        </div>
+    </div>
+    
+    <!-- Modal for displaying messages -->
+    <div class="modal" id="messageModal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeModal">&times;</span>
+            <div class="message-icon" id="messageIcon">💌</div>
+            <h2 class="message-title" id="messageTitle">Love Confession</h2>
+            <p class="message-content" id="messageContent">This is where the confession message will appear.</p>
+        </div>
+    </div>
+
+    <script>
+        // Messages data
+        const messages = {
+            1: {
+                icon: "💌",
+                title: "Love Confession",
+                content: "I've had a crush on my best friend for over a year now, but I'm too scared to tell them because I don't want to ruin our friendship."
+            },
+            2: {
+                icon: "😅",
+                title: "Embarrassing Moment",
+                content: "I once accidentally sent a text meant for my partner to my boss. It was full of inside jokes and pet names. I had to pretend my phone was hacked."
+            },
+            3: {
+                icon: "🤫",
+                title: "Deep Secret",
+                content: "I pretend to be more confident than I actually am. Most people think I have everything figured out, but inside I'm often filled with self-doubt."
+            },
+            4: {
+                icon: "🎉",
+                title: "Happy Secret",
+                content: "I've been secretly saving money for months to surprise my family with a vacation. Only two more months until I can finally tell them!"
+            },
+            5: {
+                icon: "😢",
+                title: "Sad Confession",
+                content: "I still think about my childhood pet every day, even though it's been years since they passed away. I've never loved another animal the same way."
+            },
+            6: {
+                icon: "🤔",
+                title: "Life Question",
+                content: "Sometimes I wonder if I'm on the right path in life, or if I'm just doing what's expected of me rather than what truly makes me happy."
+            }
+        };
+
+        // Get DOM elements
+        const confessionItems = document.querySelectorAll('.confession-item');
+        const modal = document.getElementById('messageModal');
+        const closeModal = document.getElementById('closeModal');
+        const messageIcon = document.getElementById('messageIcon');
+        const messageTitle = document.getElementById('messageTitle');
+        const messageContent = document.getElementById('messageContent');
+
+        // Add click event to each confession item
+        confessionItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const messageId = this.getAttribute('data-message');
+                const message = messages[messageId];
+                
+                // Update modal content
+                messageIcon.textContent = message.icon;
+                messageTitle.textContent = message.title;
+                messageContent.textContent = message.content;
+                
+                // Show modal
+                modal.style.display = 'flex';
+            });
+        });
+
+        // Close modal when X is clicked
+        closeModal.addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+
+        // Close modal when clicking outside the content
+        window.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
